@@ -31,6 +31,8 @@ class BlinkerController(QDialog):
         self.palette = QApplication.palette() if pallet is None else pallet
         self.grid = QGridLayout(self) if grid is None else grid
 
+        self.interface()
+
     def interface(self) -> None:
         """
 
