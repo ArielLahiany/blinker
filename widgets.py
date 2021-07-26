@@ -1,5 +1,5 @@
 # Python modules
-from logging import Logger
+import logging
 
 # PyADS modules
 from PyQt5.QtCore import QRegExp
@@ -20,7 +20,6 @@ class ActivationWidget(QWidget):
 
     def __init__(
             self,
-            logger: Logger,
             connection: Connection,
             color: Color,
             status: bool = None,
@@ -30,7 +29,6 @@ class ActivationWidget(QWidget):
             parent=None
     ):
         """
-        :param logger:
         :param connection:
         :param color:
         :param status:
@@ -42,7 +40,6 @@ class ActivationWidget(QWidget):
 
         super(ActivationWidget, self).__init__(parent)
 
-        self.logger = logger
         self.connection = connection
         self.color = color
 
@@ -77,7 +74,7 @@ class ActivationWidget(QWidget):
                 "MAIN.Active"
             )
         except ADSError as e:
-            self.logger.error(
+            logging.error(
                 msg="ADS error: {}".format(e)
             )
         else:
@@ -99,11 +96,11 @@ class ActivationWidget(QWidget):
                 self.status
             )
         except ADSError as e:
-            self.logger.error(
+            logging.error(
                 msg="ADS error: {}.".format(e)
             )
         else:
-            self.logger.info(
+            logging.info(
                 msg="Activation status has changed successfully."
             )
 
@@ -126,7 +123,6 @@ class FrequencyWidget(QWidget):
 
     def __init__(
             self,
-            logger: Logger,
             connection: Connection,
             color: Color,
             frequency: int = None,
@@ -137,7 +133,6 @@ class FrequencyWidget(QWidget):
     ):
         """
         todo
-        :param logger:
         :param connection:
         :param color:
         :param frequency:
@@ -149,7 +144,6 @@ class FrequencyWidget(QWidget):
 
         super(FrequencyWidget, self).__init__(parent)
 
-        self.logger = logger
         self.connection = connection
         self.color = color
 
@@ -184,7 +178,7 @@ class FrequencyWidget(QWidget):
                 "MAIN.{}Frequency".format(self.color.description)
             )
         except ADSError as e:
-            self.logger.error(
+            logging.error(
                 msg="ADS error: {}".format(e)
             )
         else:
@@ -203,11 +197,11 @@ class FrequencyWidget(QWidget):
                 int(self.line.text())
             )
         except ADSError as e:
-            self.logger.error(
+            logging.error(
                 msg="ADS error: {}.".format(e)
             )
         else:
-            self.logger.info(
+            logging.info(
                 msg="Frequency value has changed successfully."
             )
 

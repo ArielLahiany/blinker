@@ -1,18 +1,16 @@
 """
 Manages the connections to a TwinCAT backend server.
 """
-
 # Python modules
-from logging import Logger
+import logging
 
 # PyAds modules
 from pyads import Connection, PORT_TC3PLC1
 
 
-def connect(logger: Logger, address: str = None, port: int = None):
+def connect(address: str = None, port: int = None):
     """
     A base function for a PLC connection over the ADS protocol.
-    :param logger: The base logger of the module.
     :param address: Internet Protocol (IP) address.
     :param port: Internet Protocol (IP) port.
     :return: a PLC object for manipulation.
@@ -27,22 +25,22 @@ def connect(logger: Logger, address: str = None, port: int = None):
     try:
         plc = Connection(address, port)
     except ValueError:
-        logger.error(
+        logging.error(
             msg="It is not a valid IP address.",
         )
     except FileNotFoundError:
-        logger.error(
+        logging.error(
             msg="FileNotFoundError: Could not find module 'TcAdsDll.dll'."
         )
     else:
         try:
             plc.open()
         except plc is None:
-            logger.error(
+            logging.error(
                 "Backend server connection failed."
              )
         else:
-            logger.info(
+            logging.info(
                 msg="Backend server connection succeeded."
             )
             return plc

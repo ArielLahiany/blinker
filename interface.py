@@ -1,5 +1,5 @@
 # Python modules
-from logging import Logger
+import logging
 
 # PyQt modules
 from PyQt5.QtWidgets import QDialog, QGridLayout, QApplication, QStyleFactory
@@ -8,17 +8,8 @@ from PyQt5.QtWidgets import QDialog, QGridLayout, QApplication, QStyleFactory
 from pyads import Connection
 
 # Project modules
-from client import connect
 from models import Color
 from widgets import ActivationWidget, FrequencyWidget
-
-# todo: remove.
-import logging
-
-# log = logging.getLogger("__name__")
-#
-# plc = connect(logger=log)
-red = Color(code="#cc3232", description="Red")
 
 
 class BlinkerController(QDialog):
@@ -28,8 +19,6 @@ class BlinkerController(QDialog):
 
     def __init__(
             self,
-            # todo: add logging etc.
-            logger: Logger,
             connection: Connection,
             color: [Color],
             pallet: QApplication.palette = None,
@@ -38,7 +27,6 @@ class BlinkerController(QDialog):
     ):
         super(BlinkerController, self).__init__(parent)
 
-        self.logger = logger
         self.connection = connection
         self.color = color
 
@@ -54,6 +42,9 @@ class BlinkerController(QDialog):
         :return: None.
         """
 
+        logging.info("info")
+        logging.debug("debug")
+
         self.setWindowTitle("Blinker Controller")
         self.setLayout(self.grid)
 
@@ -65,19 +56,16 @@ class BlinkerController(QDialog):
         QApplication.setPalette(QApplication.style().standardPalette())
 
         activation = ActivationWidget(
-            logger=self.logger,
             connection=self.connection,
-            color=red
+            color=self.color[0]
         )
         frequency = FrequencyWidget(
-            logger=self.logger,
             connection=self.connection,
-            color=red
+            color=self.color[0]
         )
         temp_widget = ActivationWidget(
-            logger=self.logger,
             connection=self.connection,
-            color=red
+            color=self.color[0]
         )
 
         # todo: loop for dynamic rows.
