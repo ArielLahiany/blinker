@@ -1,0 +1,8 @@
+# PyCharm.
+.idea
+
+# Sandbox modules.
+sandbox.py
+
+# Virtual Environment.
+/venv/
