@@ -11,7 +11,6 @@ import logging
 from PyQt5.QtWidgets import QApplication
 
 # Project modules
-# from widgets import ActivationWidget
 from interface import BlinkerController
 from models import Color
 from client import connect
@@ -24,14 +23,19 @@ if __name__ == "__main__":
         sys.argv
     )
 
-    # todo: temp.
-
     plc = connect(logger=log)
     red = Color(code="#cc3232", description="Red")
+    green = Color(code="#2dc937", description="Red")
 
-    # activation = ActivationWidget(logger=log, connection=plc, color=red)
-    # activation.show()
-    blinker = BlinkerController()
+    # The main window for the blinker controller.
+    blinker = BlinkerController(
+        logger=log,
+        connection=plc,
+        color=[
+            red,
+            # green
+        ]
+    )
     blinker.show()
 
     # Defines the exit of the application.

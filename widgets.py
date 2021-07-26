@@ -136,7 +136,7 @@ class FrequencyWidget(QWidget):
             parent=None
     ):
         """
-
+        todo
         :param logger:
         :param connection:
         :param color:
