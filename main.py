@@ -11,7 +11,7 @@ import logging
 from PyQt5.QtWidgets import QApplication
 
 # Project modules
-from widgets import Activation
+from widgets import ActivationWidget
 from models import Color
 from client import connect
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     plc = connect(logger=log)
     red = Color(code="#cc3232", description="Red")
 
-    activation = Activation(logger=log, connection=plc, color=red)
+    activation = ActivationWidget(logger=log, connection=plc, color=red)
     activation.show()
 
     # Defines the exit of the application.

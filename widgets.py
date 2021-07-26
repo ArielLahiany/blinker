@@ -2,6 +2,8 @@
 from logging import Logger
 
 # PyADS modules
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QRegExpValidator
 from pyads import Connection, ADSError
 
 # PyQt modules
@@ -11,7 +13,7 @@ from PyQt5.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QPushButton, QLineE
 from models import Color
 
 
-class Activation(QWidget):
+class ActivationWidget(QWidget):
     """
     Activation button initialization widget.
     """
@@ -38,7 +40,7 @@ class Activation(QWidget):
         :param parent:
         """
 
-        super(Activation, self).__init__(parent)
+        super(ActivationWidget, self).__init__(parent)
 
         self.logger = logger
         self.connection = connection
@@ -58,7 +60,7 @@ class Activation(QWidget):
         :return: QGroupBox object.
         """
 
-        self.group.setTitle(self.__class__.__name__)
+        self.group.setTitle("Activation")
         self.group.setGeometry(0, 0, 125, 100)
         self.layout.addWidget(self.button)
         self.group.setLayout(self.layout)
@@ -88,7 +90,7 @@ class Activation(QWidget):
         :return: None.
         """
 
-        # Updates.
+        # Updated the bulb status.
         self.status = not self.status
 
         try:
@@ -108,7 +110,7 @@ class Activation(QWidget):
     def controller(self) -> QPushButton:
         """
         A base function that controls the activation of each LED bulb.
-        :return: QLineEdit object.
+        :return: QPushButton object.
         """
 
         self.button.setCheckable(True)
@@ -117,7 +119,7 @@ class Activation(QWidget):
         return self.button
 
 
-class Frequency(QWidget):
+class FrequencyWidget(QWidget):
     """"
     Frequency input box initialization widget.
     """
@@ -145,7 +147,7 @@ class Frequency(QWidget):
         :param parent:
         """
 
-        super(Frequency, self).__init__(parent)
+        super(FrequencyWidget, self).__init__(parent)
 
         self.logger = logger
         self.connection = connection
@@ -156,6 +158,7 @@ class Frequency(QWidget):
         self.layout = QVBoxLayout(self) if layout is None else layout
         self.line = QLineEdit("Frequency") if line is None else line
 
+        self.controller()
         self.interface()
 
     def interface(self) -> QGroupBox:
@@ -164,7 +167,7 @@ class Frequency(QWidget):
         :return: QGroupBox object.
         """
 
-        self.group.setTitle(self.__class__.__name__)
+        self.group.setTitle("Frequency")
         self.group.setGeometry(0, 0, 125, 100)
         self.layout.addWidget(self.line)
         self.group.setLayout(self.layout)
@@ -207,6 +210,21 @@ class Frequency(QWidget):
             self.logger.info(
                 msg="Frequency value has changed successfully."
             )
+
+    def controller(self) -> QLineEdit:
+        """
+        A base function that controls the frequency of each LED bulb.
+        :return: QLineEdit object.
+        """
+
+        # Sets bulb frequency validation.
+        # todo: validate better.
+        validator = QRegExpValidator(QRegExp("[0-9]*"))
+
+        self.line.setValidator(validator)
+        self.line.setText(str(self.frequency))
+        self.line.editingFinished.connect(self.listener)
+        return self.line
 
 
 class Bulb(QWidget):
