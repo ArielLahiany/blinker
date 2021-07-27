@@ -39,6 +39,7 @@ class ActivationWidget(QWidget):
             parent=None
     ):
         """
+        todo:
         :param connection:
         :param color:
         :param status:
@@ -231,6 +232,41 @@ class FrequencyWidget(QWidget):
         return self.line
 
 
-class Bulb(QWidget):
+class BulbWidget(QWidget):
     # todo: consider doing by radio checkbox.
-    pass
+
+    def __init__(self,
+                 connection: Connection,
+                 color: Color,
+                 group: QGroupBox = None,
+                 layout: QVBoxLayout = None,
+                 parent=None):
+        """
+
+        :param connection:
+        :param color:
+        :param group:
+        :param layout:
+        :param parent:
+        """
+        super(BulbWidget, self).__init__(parent)
+
+        self.connection = connection
+        self.color = color
+
+        self.group = QGroupBox(self) if group is None else group
+        self.layout = QVBoxLayout(self) if layout is None else layout
+
+        self.interface()
+
+    def interface(self) -> QGroupBox:
+        """
+        A base function that defines the graphical user interface of the group.
+        :return: QGroupBox object.
+        """
+
+        self.group.setTitle("Bulb")
+        self.group.setGeometry(0, 0, 125, 100)
+        self.layout.addWidget(self.button)
+        self.group.setLayout(self.layout)
+        return self.group
