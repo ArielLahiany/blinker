@@ -261,7 +261,14 @@ class BulbWidget(QWidget):
         if radius is None:
             self.radius = 40
 
+        # todo: that is being called only once. need to stay alive.
         self.status = self.state() if status is None else status
+        self.symbol = self.connection.get_symbol(
+                "MAIN.{}Status".format(self.color.description)
+            )
+        self.symbol.auto_update = True
+
+        # self.status = self.state() if status is None else status
         self.group = QGroupBox(self) if group is None else group
         self.layout = QVBoxLayout(self) if layout is None else layout
 
