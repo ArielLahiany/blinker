@@ -9,6 +9,8 @@ import logging
 from pyads import Connection, ADSError
 
 # PyQt modules
+from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtGui import QRegExpValidator, QPainter, QColor, QPen, QBrush, QPaintEvent
 from PyQt5.QtWidgets import (
     QGroupBox,
     QLineEdit,
@@ -74,7 +76,7 @@ class ActivationWidget(QWidget):
 
     def state(self) -> bool:
         """
-        A base function that reads the initial state of each LED bulb.
+        A base function that reads the initial state of each LED bulb switch.
         :return: Boolean object.
         """
 
@@ -231,16 +233,20 @@ class FrequencyWidget(QWidget):
 
 
 class BulbWidget(QWidget):
-    # todo: consider doing by radio checkbox.
+    """
+    Bulb LED indicator initialization widget.
+    """
 
     def __init__(self,
                  connection: Connection,
                  color: Color,
+                 radius: int = None,
+                 status: bool = None,
                  group: QGroupBox = None,
                  layout: QVBoxLayout = None,
                  parent=None):
         """
-
+        # todo
         :param connection:
         :param color:
         :param group:
@@ -252,6 +258,10 @@ class BulbWidget(QWidget):
         self.connection = connection
         self.color = color
 
+        if radius is None:
+            self.radius = 40
+
+        self.status = self.state() if status is None else status
         self.group = QGroupBox(self) if group is None else group
         self.layout = QVBoxLayout(self) if layout is None else layout
 
@@ -265,6 +275,44 @@ class BulbWidget(QWidget):
 
         self.group.setTitle("Bulb")
         self.group.setGeometry(0, 0, 125, 100)
-        self.layout.addWidget(self.button)
         self.group.setLayout(self.layout)
         return self.group
+
+    def state(self) -> bool:
+        """
+        A base function that reads the initial state of each LED bulb.
+        :return: Boolean object.
+        """
+
+        try:
+            status = self.connection.read_by_name(
+                "MAIN.{}Status".format(self.color.description)
+            )
+        except ADSError as e:
+            logging.error(
+                msg="ADS error: {}".format(e)
+            )
+        else:
+            return status
+
+    def draw(self, painter: QPainter) -> None:
+        """
+        # todo: maybe need to delete that.
+        :return:
+        """
+        color = QColor(0, 0, 0)
+        color.setNamedColor(self.color.code)
+
+        # Sets the painter.
+        painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
+        painter.setBrush(QBrush(color, Qt.SolidPattern))
+
+        # Sets the location and the size of the LED bulb.
+        painter.drawEllipse(self.radius, self.radius, self.radius, self.radius)
+
+    def paintEvent(self, painter: QPaintEvent) -> None:
+        painter = QPainter(self)
+        painter.begin(self)
+
+        self.draw(painter)
+        painter.end()
