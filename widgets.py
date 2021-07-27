@@ -9,12 +9,13 @@ import logging
 from pyads import Connection, ADSError
 
 # PyQt modules
-from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtCore import QRegExp, Qt, QStateMachine, QState, pyqtSignal
 from PyQt5.QtGui import QRegExpValidator, QPainter, QColor, QPen, QBrush, QPaintEvent
 from PyQt5.QtWidgets import (
     QGroupBox,
     QLineEdit,
     QPushButton,
+    QRadioButton,
     QVBoxLayout,
     QWidget
 )
@@ -237,6 +238,9 @@ class BulbWidget(QWidget):
     Bulb LED indicator initialization widget.
     """
 
+    # Custom signal to control the bulb state.
+    signal = pyqtSignal()
+
     def __init__(self,
                  connection: Connection,
                  color: Color,
@@ -244,6 +248,8 @@ class BulbWidget(QWidget):
                  status: bool = None,
                  group: QGroupBox = None,
                  layout: QVBoxLayout = None,
+                 indicator: QRadioButton = None,
+                 machine: QStateMachine = None,
                  parent=None):
         """
         # todo
@@ -259,7 +265,7 @@ class BulbWidget(QWidget):
         self.color = color
 
         if radius is None:
-            self.radius = 40
+            self.radius = 25
 
         # todo: that is being called only once. need to stay alive.
         self.status = self.state() if status is None else status
@@ -268,10 +274,12 @@ class BulbWidget(QWidget):
             )
         self.symbol.auto_update = True
 
-        # self.status = self.state() if status is None else status
         self.group = QGroupBox(self) if group is None else group
         self.layout = QVBoxLayout(self) if layout is None else layout
+        self.indicator = QRadioButton(self) if indicator is None else indicator
+        self.machine = QStateMachine(self) if machine is None else machine
 
+        self.controller()
         self.interface()
 
     def interface(self) -> QGroupBox:
@@ -280,8 +288,18 @@ class BulbWidget(QWidget):
         :return: QGroupBox object.
         """
 
+        self.indicator.setStyleSheet(
+            """
+            QRadioButton {{ color: {0}; }}
+            QRadioButton::indicator {{ width: {1}px; height: {1}px;}}
+            """.format(self.color.code,
+                       self.radius)
+                                     )
+
         self.group.setTitle("Bulb")
         self.group.setGeometry(0, 0, 125, 100)
+        self.layout.setAlignment(Qt.AlignHCenter)
+        self.layout.addWidget(self.indicator)
         self.group.setLayout(self.layout)
         return self.group
 
@@ -302,28 +320,49 @@ class BulbWidget(QWidget):
         else:
             return status
 
-    def draw(self, painter: QPainter) -> None:
+    def controller(self) -> None:
         """
-        # todo: maybe need to delete that.
-        :return:
         """
-        color = QColor(0, 0, 0)
-        color.setNamedColor(self.color.code)
 
-        # Sets the painter.
-        painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
-        painter.setBrush(QBrush(color, Qt.SolidPattern))
+        on = QState()
+        off = QState()
 
-        # Sets the location and the size of the LED bulb.
-        painter.drawEllipse(self.radius, self.radius, self.radius, self.radius)
+        on.assignProperty(self, "color", "#ff3232")
+        off.assignProperty(self, "color", "#000000")
 
-    def paintEvent(self, painter: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.begin(self)
+        self.machine.addState(on)
+        self.machine.addState(off)
 
-        self.draw(painter)
-        painter.end()
+        # todo: pass to the state function.
+        if self.status is True:
+            self.machine.setInitialState(on)
+        elif self.status is False:
+            self.machine.setInitialState(off)
+        self.machine.start()
 
-    def func1(self, *args):
-        temp_status: bool = False
+    # def synchronizer(self):
+    #     self.status = self.symbol
+    #     print(self.status)
+    #     self.signal.emit()
 
+    # def draw(self, painter: QPainter) -> None:
+    #     """
+    #     # todo: maybe need to delete that.
+    #     :return:
+    #     """
+    #     color = QColor(0, 0, 0)
+    #     color.setNamedColor(self.color.code)
+    #
+    #     # Sets the painter.
+    #     painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
+    #     painter.setBrush(QBrush(color, Qt.SolidPattern))
+    #
+    #     # Sets the location and the size of the LED bulb.
+    #     painter.drawEllipse(self.radius, self.radius, self.radius, self.radius)
+    #
+    # def paintEvent(self, painter: QPaintEvent) -> None:
+    #     painter = QPainter(self)
+    #     painter.begin(self)
+    #
+    #     self.draw(painter)
+    #     painter.end()
