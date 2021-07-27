@@ -21,20 +21,20 @@ class BulbMonitor(QThread):
                 self.signal.emit()
 
 
-class MyWidget(QtGui.QWidget):
-
-    def __init__(self, ...)
-        ...
-        self.file_monitor = FileMonitor()
-        self.thread = QtCore.QThread(self)
-        self.file_monitor.image_signal.connect(self.image_callback)
-        self.file_monitor.moveToThread(self.thread)
-        self.thread.started.connect(self.file_monitor.monitor_images)
-        self.thread.start()
-
-    @QtCore.pyqtSlot(str)
-    def image_callback(self, filepath):
-        pixmap = QtGui.QPixmap(filepath)
+# class MyWidget(QtGui.QWidget):
+#
+#     def __init__(self, ...)
+#         ...
+#         self.file_monitor = FileMonitor()
+#         self.thread = QtCore.QThread(self)
+#         self.file_monitor.image_signal.connect(self.image_callback)
+#         self.file_monitor.moveToThread(self.thread)
+#         self.thread.started.connect(self.file_monitor.monitor_images)
+#         self.thread.start()
+#
+#     @QtCore.pyqtSlot(str)
+#     def image_callback(self, filepath):
+#         pixmap = QtGui.QPixmap(filepath)
 # class BulbThread(QThread):
 #     """
 #

@@ -277,7 +277,7 @@ class BulbWidget(QWidget):
         self.indicator = QRadioButton(self) if indicator is None else indicator
         self.machine = QStateMachine(self) if machine is None else machine
 
-        self.listener()
+        # self.listener()
         self.controller()
         self.interface()
 
@@ -330,14 +330,14 @@ class BulbWidget(QWidget):
 
         return self.indicator
 
-    def listener(self):
-        thread = BulbMonitor()
-        thread.signal.connect(self.updater)
-        thread.moveToThread(thread)
-        thread.started
-        thread.start()
-
-    @pyqtSlot(bool)
-    def updater(self, status):
-        # print(self.symbol.read())
-        self.indicator.setChecked(status)
+    # def listener(self):
+    #     thread = BulbMonitor()
+    #     thread.signal.connect(self.updater)
+    #     thread.moveToThread(thread)
+    #     thread.started
+    #     thread.start()
+    #
+    # @pyqtSlot(bool)
+    # def updater(self, status):
+    #     # print(self.symbol.read())
+    #     self.indicator.setChecked(status)
