@@ -9,8 +9,8 @@ import logging
 from pyads import Connection, ADSError
 
 # PyQt modules
-from PyQt5.QtCore import QRegExp, Qt, QStateMachine, QState, pyqtSignal
-from PyQt5.QtGui import QRegExpValidator, QPainter, QColor, QPen, QBrush, QPaintEvent
+from PyQt5.QtCore import QRegExp, Qt, QStateMachine, pyqtSlot
+from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import (
     QGroupBox,
     QLineEdit,
@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import (
 
 # Project modules
 from models import Color
+from threads import BulbMonitor
 
 
 class ActivationWidget(QWidget):
@@ -238,9 +239,6 @@ class BulbWidget(QWidget):
     Bulb LED indicator initialization widget.
     """
 
-    # Custom signal to control the bulb state.
-    signal = pyqtSignal()
-
     def __init__(self,
                  connection: Connection,
                  color: Color,
@@ -279,6 +277,7 @@ class BulbWidget(QWidget):
         self.indicator = QRadioButton(self) if indicator is None else indicator
         self.machine = QStateMachine(self) if machine is None else machine
 
+        self.listener()
         self.controller()
         self.interface()
 
@@ -287,14 +286,6 @@ class BulbWidget(QWidget):
         A base function that defines the graphical user interface of the group.
         :return: QGroupBox object.
         """
-
-        self.indicator.setStyleSheet(
-            """
-            QRadioButton {{ color: {0}; }}
-            QRadioButton::indicator {{ width: {1}px; height: {1}px;}}
-            """.format(self.color.code,
-                       self.radius)
-                                     )
 
         self.group.setTitle("Bulb")
         self.group.setGeometry(0, 0, 125, 100)
@@ -320,49 +311,33 @@ class BulbWidget(QWidget):
         else:
             return status
 
-    def controller(self) -> None:
+    def controller(self) -> QRadioButton:
         """
+        A base function that controls the indication of each LED bulb.
+        :return: QRadioButton object.
         """
 
-        on = QState()
-        off = QState()
+        self.indicator.setStyleSheet(
+            """
+            QRadioButton {{ color: {0}; }}
+            QRadioButton::indicator {{ width: {1}px; height: {1}px;}}
+            """.format(self.color.code,
+                       self.radius)
+                                     )
+        # todo: maybe need to set to False.
+        self.indicator.setCheckable(True)
+        self.indicator.setChecked(self.status)
 
-        on.assignProperty(self, "color", "#ff3232")
-        off.assignProperty(self, "color", "#000000")
+        return self.indicator
 
-        self.machine.addState(on)
-        self.machine.addState(off)
+    def listener(self):
+        thread = BulbMonitor()
+        thread.signal.connect(self.updater)
+        thread.moveToThread(thread)
+        thread.started
+        thread.start()
 
-        # todo: pass to the state function.
-        if self.status is True:
-            self.machine.setInitialState(on)
-        elif self.status is False:
-            self.machine.setInitialState(off)
-        self.machine.start()
-
-    # def synchronizer(self):
-    #     self.status = self.symbol
-    #     print(self.status)
-    #     self.signal.emit()
-
-    # def draw(self, painter: QPainter) -> None:
-    #     """
-    #     # todo: maybe need to delete that.
-    #     :return:
-    #     """
-    #     color = QColor(0, 0, 0)
-    #     color.setNamedColor(self.color.code)
-    #
-    #     # Sets the painter.
-    #     painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
-    #     painter.setBrush(QBrush(color, Qt.SolidPattern))
-    #
-    #     # Sets the location and the size of the LED bulb.
-    #     painter.drawEllipse(self.radius, self.radius, self.radius, self.radius)
-    #
-    # def paintEvent(self, painter: QPaintEvent) -> None:
-    #     painter = QPainter(self)
-    #     painter.begin(self)
-    #
-    #     self.draw(painter)
-    #     painter.end()
+    @pyqtSlot(bool)
+    def updater(self, status):
+        # print(self.symbol.read())
+        self.indicator.setChecked(status)
