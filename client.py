@@ -1,6 +1,7 @@
 """
-Manages the connections to a TwinCAT backend server.
+Manages the required connections to a TwinCAT backend server.
 """
+
 # Python modules
 import logging
 

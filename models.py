@@ -1,5 +1,5 @@
 """
-Manages the required data structures for the blinker.
+Manages the required data structures.
 """
 
 

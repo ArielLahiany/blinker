@@ -1,8 +1,17 @@
+"""
+Manages the required main Graphical User Interface dialog box.
+"""
+
 # Python modules
 import logging
 
 # PyQt modules
-from PyQt5.QtWidgets import QDialog, QGridLayout, QApplication, QStyleFactory
+from PyQt5.QtWidgets import (
+    QApplication,
+    QDialog,
+    QGridLayout,
+    QStyleFactory
+)
 
 # PyADS modules
 from pyads import Connection
@@ -14,7 +23,7 @@ from widgets import ActivationWidget, FrequencyWidget
 
 class BlinkerController(QDialog):
     """
-
+    Blinker controller initialization widget.
     """
 
     def __init__(
@@ -42,8 +51,9 @@ class BlinkerController(QDialog):
         :return: None.
         """
 
-        logging.info("info")
-        logging.debug("debug")
+        logging.info(
+            msg="Initializing the main Graphical User Interface for the blinker application."
+        )
 
         self.setWindowTitle("Blinker Controller")
         self.setLayout(self.grid)

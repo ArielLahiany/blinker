@@ -1,3 +1,7 @@
+"""
+Manages the required Graphical User Interface widgets.
+"""
+
 # Python modules
 import logging
 
@@ -7,7 +11,13 @@ from PyQt5.QtGui import QRegExpValidator
 from pyads import Connection, ADSError
 
 # PyQt modules
-from PyQt5.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QPushButton, QLineEdit
+from PyQt5.QtWidgets import (
+    QGroupBox,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget
+)
 
 # Project modules
 from models import Color

@@ -1,6 +1,7 @@
 """
-Main entry point for Blinker application.
+Main entry point for blinker application.
 """
+
 # Python modules
 import os
 import sys
@@ -11,9 +12,9 @@ import logging.config
 from PyQt5.QtWidgets import QApplication
 
 # Project modules
+from client import connect
 from interface import BlinkerController
 from models import Color
-from client import connect
 
 
 # Logging configuration.
