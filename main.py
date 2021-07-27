@@ -3,10 +3,10 @@ Main entry point for blinker application.
 """
 
 # Python modules
-import os
-import sys
 import logging
 import logging.config
+import os
+import sys
 
 # PyQt modules
 from PyQt5.QtWidgets import QApplication

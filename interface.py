@@ -5,6 +5,9 @@ Manages the required main Graphical User Interface dialog box.
 # Python modules
 import logging
 
+# PyADS modules
+from pyads import Connection
+
 # PyQt modules
 from PyQt5.QtWidgets import (
     QApplication,
@@ -12,9 +15,6 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QStyleFactory
 )
-
-# PyADS modules
-from pyads import Connection
 
 # Project modules
 from models import Color

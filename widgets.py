@@ -6,8 +6,6 @@ Manages the required Graphical User Interface widgets.
 import logging
 
 # PyADS modules
-from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QRegExpValidator
 from pyads import Connection, ADSError
 
 # PyQt modules
