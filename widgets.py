@@ -323,3 +323,7 @@ class BulbWidget(QWidget):
 
         self.draw(painter)
         painter.end()
+
+    def func1(self, *args):
+        temp_status: bool = False
+
